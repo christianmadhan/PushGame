@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pushgame/push_game.dart';
+import 'package:vibration/vibration.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft
-  ]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   runApp(const MyApp());
 }
 
@@ -34,10 +33,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -46,7 +43,16 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: PushGame(),
+        child: StreamBuilder<bool?>(
+          stream: Vibration.hasCustomVibrationsSupport().asStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return PushGame(hasVibration: snapshot.data ?? false);
+            } else {
+              return PushGame(hasVibration: false);
+            }
+          },
+        ),
       ),
     );
   }

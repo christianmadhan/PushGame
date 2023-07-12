@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
 class PushButton extends StatefulWidget {
-   bool showHiddenYes;
-   bool hiddenYes;
-   bool active;
-    PushButton({
+   final bool showHiddenYes;
+   final bool hiddenYes;
+   final bool active;
+   final bool reset;
+   final Function(bool hiddenYes) callbackFunction;
+    const PushButton({
     required this.showHiddenYes,
     required this.hiddenYes,
     required this.active,
+    required this.callbackFunction,
+    required this.reset,
     super.key,
   });
 
@@ -21,12 +25,17 @@ class _PushButtonState extends State<PushButton> {
   Color thisButtonColor = const Color.fromARGB(100, 217, 217, 217);
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return widget.showHiddenYes ? Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-       height: 80,
-       width: 80,
+       height: 100,
+       width: 100,
            decoration: const BoxDecoration(
              shape: BoxShape.circle,
              color: Color.fromARGB(200, 95, 196, 239)
@@ -42,12 +51,13 @@ class _PushButtonState extends State<PushButton> {
             Vibration.vibrate(duration: 500, amplitude: 255);
           }
         });
+        widget.callbackFunction(widget.hiddenYes);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-         height: 80,
-         width: 80,
+         height: 100,
+         width: 100,
              decoration: BoxDecoration(
                shape: BoxShape.circle,
                color: thisButtonColor,
@@ -57,7 +67,7 @@ class _PushButtonState extends State<PushButton> {
                       color: Colors.white.withOpacity(0.2),
                       spreadRadius: 5,
                       blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
                   ],
              ),
